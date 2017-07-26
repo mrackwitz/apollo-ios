@@ -115,12 +115,12 @@ public class ApolloClient {
   ///   - queue: A dispatch queue on which the result handler will be called. Defaults to the main queue.
   ///   - resultHandler: An optional closure that is called when mutation results are available or when an error occurs.
   /// - Returns: An object that can be used to cancel an in progress mutation.
-  @discardableResult public func perform<Mutation: GraphQLMutation>(mutation: Mutation, queue: DispatchQueue = DispatchQueue.main, resultHandler: OperationResultHandler<Mutation>? = nil) -> Cancellable {
-    return _perform(mutation: mutation, queue: queue, resultHandler: resultHandler)
+  @discardableResult public func perform<Mutation: GraphQLMutation>(mutation: Mutation, files: [GraphQLFile]? = nil, queue: DispatchQueue = DispatchQueue.main, resultHandler: OperationResultHandler<Mutation>? = nil) -> Cancellable {
+    return _perform(mutation: mutation, files: files, queue: queue, resultHandler: resultHandler)
   }
   
-  func _perform<Mutation: GraphQLMutation>(mutation: Mutation, context: UnsafeMutableRawPointer? = nil, queue: DispatchQueue, resultHandler: OperationResultHandler<Mutation>?) -> Cancellable {
-    return send(operation: mutation, context: context, handlerQueue: queue, resultHandler: resultHandler)
+  func _perform<Mutation: GraphQLMutation>(mutation: Mutation, files: [GraphQLFile]? = nil, context: UnsafeMutableRawPointer? = nil, queue: DispatchQueue, resultHandler: OperationResultHandler<Mutation>?) -> Cancellable {
+    return send(operation: mutation, files: files, context: context, handlerQueue: queue, resultHandler: resultHandler)
   }
 
   /// Subscribe to a subscription
@@ -135,7 +135,7 @@ public class ApolloClient {
   }
   
     
-  fileprivate func send<Operation: GraphQLOperation>(operation: Operation, context: UnsafeMutableRawPointer?, handlerQueue: DispatchQueue, resultHandler: OperationResultHandler<Operation>?) -> Cancellable {
+  fileprivate func send<Operation: GraphQLOperation>(operation: Operation, files: [GraphQLFile]? = nil, context: UnsafeMutableRawPointer?, handlerQueue: DispatchQueue, resultHandler: OperationResultHandler<Operation>?) -> Cancellable {
     func notifyResultHandler(result: GraphQLResult<Operation.Data>?, error: Error?) {
       guard let resultHandler = resultHandler else { return }
       
@@ -144,7 +144,7 @@ public class ApolloClient {
       }
     }
     
-    return networkTransport.send(operation: operation) { (response, error) in
+    return networkTransport.send(operation: operation, files: files) { (response, error) in
       guard let response = response else {
         notifyResultHandler(result: nil, error: error)
         return
