@@ -87,25 +87,24 @@ public class MultipartFormData {
     
     var encoded = Data()
     
-    while (inputStream.hasBytesAvailable) {
+    while inputStream.hasBytesAvailable {
       var buffer = [UInt8](repeating: 0, count: 1024)
       let bytesRead = inputStream.read(&buffer, maxLength: 1024)
       
-      if let _ = inputStream.streamError {
+      guard inputStream.streamError == nil else {
         return encoded
       }
       
-      if bytesRead > 0 {
-        encoded.append(buffer, count: bytesRead)
-      } else {
+      guard bytesRead > 0 else {
         break
       }
+      encoded.append(buffer, count: bytesRead)
     }
     
     return encoded
   }
   
   private func encode(string: String) -> Data {
-    return string.data(using: String.Encoding.utf8, allowLossyConversion: false)!
+    return string.data(using: .utf8, allowLossyConversion: false)!
   }
 }
