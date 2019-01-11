@@ -10,9 +10,6 @@ public struct GraphQLFile {
   }
   
   public init?(fieldName: String, originalName: String, mimeType: String = "application/octet-stream", fileURL: URL) {
-    // TODO: Better error handling
-    
-    
     guard let inputStream = InputStream(url: fileURL) else {
       return nil
     }
