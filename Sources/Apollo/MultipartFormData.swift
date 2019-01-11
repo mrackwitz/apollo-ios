@@ -91,7 +91,7 @@ public class MultipartFormData {
       var buffer = [UInt8](repeating: 0, count: 1024)
       let bytesRead = inputStream.read(&buffer, maxLength: 1024)
       
-      if let error = inputStream.streamError {
+      if let _ = inputStream.streamError {
         return encoded
       }
       

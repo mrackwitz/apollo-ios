@@ -34,16 +34,11 @@ public struct GraphQLFile {
   }
   
   private static func getFileSize(fileURL: URL) -> UInt64? {
-    let fileSize: UInt64
-    
-    do {
-      guard let fileSize = try FileManager.default.attributesOfItem(atPath: fileURL.path)[.size] as? NSNumber else {
-        return nil
-      }
-      
-      return fileSize.uint64Value
-    } catch {
+    guard let attributes = try? FileManager.default.attributesOfItem(atPath: fileURL.path),
+      let fileSize = attributes[.size] as? NSNumber else {
       return nil
     }
+      
+    return fileSize.uint64Value
   }
 }
