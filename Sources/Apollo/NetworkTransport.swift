@@ -22,10 +22,3 @@ public protocol NetworkTransport {
   /// - Returns: An object that can be used to cancel an in progress request.
   func upload<Operation: GraphQLOperation>(operation: Operation, files: [GraphQLFile]?, progressHandler: ((Progress) -> Void)?, completionHandler: @escaping (GraphQLResponse<Operation>?, Error?) -> Void) -> Cancellable
 }
-
-public extension NetworkTransport {
-  func upload<Operation: GraphQLOperation>(operation: Operation, files: [GraphQLFile]? = nil, progressHandler: ((Progress) -> Void)? = nil, completionHandler: @escaping (GraphQLResponse<Operation>?, Error?) -> Void) -> Cancellable {
-    fatalError("NetworkTransport.upload(operation:files:progressHandler:completionHandler) not implemented.")
-  }
-}
-
